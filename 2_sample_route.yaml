@@ -100,34 +100,13 @@ spec:
       namespace: kong-demo
       port: 80
       weight: 1
+    filters:
+      - type: URLRewrite
+        urlRewrite:
+          path:
+            replacePrefixMatch: /
+            type: ReplacePrefixMatch
     matches:
     - path:
         type: PathPrefix
         value: /anything2
-status:
-  parents:
-  - conditions:
-    - lastTransitionTime: "2026-04-18T09:31:28Z"
-      message: ""
-      observedGeneration: 1
-      reason: Accepted
-      status: "True"
-      type: Accepted
-    - lastTransitionTime: "2026-04-18T09:31:28Z"
-      message: ""
-      observedGeneration: 1
-      reason: ResolvedRefs
-      status: "True"
-      type: ResolvedRefs
-    - lastTransitionTime: "2026-04-18T09:31:30Z"
-      message: ""
-      observedGeneration: 1
-      reason: ConfiguredInGateway
-      status: "True"
-      type: Programmed
-    controllerName: konghq.com/gateway-operator
-    parentRef:
-      group: gateway.networking.k8s.io
-      kind: Gateway
-      name: kong
-      namespace: kong
