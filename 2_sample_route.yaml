@@ -83,12 +83,9 @@ metadata:
   annotations:
     argocd.argoproj.io/tracking-id: kong-demo:gateway.networking.k8s.io/HTTPRoute:kong-demo/myservice-b
     konghq.com/strip-path: "true"
-  creationTimestamp: "2026-04-18T09:31:28Z"
   generation: 1
   name: myservice-b
   namespace: kong-demo
-  resourceVersion: "16847"
-  uid: fd67fcbe-d645-45eb-8f7e-31dc959af7cc
 spec:
   parentRefs:
   - group: gateway.networking.k8s.io
