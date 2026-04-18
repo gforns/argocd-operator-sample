@@ -76,3 +76,25 @@ spec:
       namespace: kong-demo
       kind: Service
       port: 80
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: myservice-b
+  namespace: kong-demo
+  annotations:
+    konghq.com/strip-path: 'true'
+spec:
+  parentRefs:
+  - name: kong
+    namespace: kong
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /anything2
+    backendRefs:
+    - name: myservice-a
+      namespace: kong-demo
+      kind: Service
+      port: 80
