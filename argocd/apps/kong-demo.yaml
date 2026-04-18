@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong-demo
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/gforns/argocd-operator-sample.git
+    targetRevision: HEAD
+    path: .
+    directory:
+      recurse: false
+      include: 2_sample_route.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong-demo
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true

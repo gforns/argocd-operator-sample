@@ -1,0 +1,78 @@
+#
+# To test this example, you can use the following curl commands:
+#    curl 127.0.0.1:80/anything -H "ApiKey: consumer1"
+#
+## Namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kong-demo
+---
+## Service and Deployment fro myservice-a, important the appProtocol
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myservice-a
+  namespace: kong-demo
+  annotations:
+    konghq.com/path: "/anything"
+    konghq.com/plugins: key-auth,file-log
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    appProtocol: http
+    targetPort: 80
+  selector:
+    app: myservice-a
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myservice-a
+  name: myservice-a-dep
+  namespace: kong-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myservice-a
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: myservice-a
+    spec:
+      containers:
+      - image: gforns/httpenv
+        name: httpenv
+        resources: {}
+        env:
+        - name: MYSERVICE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: myservice-a
+  namespace: kong-demo
+  annotations:
+    konghq.com/strip-path: 'true'
+spec:
+  parentRefs:
+  - name: kong
+    namespace: kong
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /anything
+    backendRefs:
+    - name: myservice-a
+      namespace: kong-demo
+      kind: Service
+      port: 80

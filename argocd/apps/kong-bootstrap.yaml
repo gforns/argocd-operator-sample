@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kong-bootstrap
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    repoURL: https://charts.konghq.com
+    chart: kong-operator
+    targetRevision: 1.2.2
+    helm:
+      releaseName: kong-operator
+      values: |
+        ko-crds:
+          enabled: true
+        gwapi-standard-crds:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kong-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
