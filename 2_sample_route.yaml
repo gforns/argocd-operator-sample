@@ -80,21 +80,57 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
+  annotations:
+    argocd.argoproj.io/tracking-id: kong-demo:gateway.networking.k8s.io/HTTPRoute:kong-demo/myservice-b
+    konghq.com/strip-path: "true"
+  creationTimestamp: "2026-04-18T09:31:28Z"
+  generation: 1
   name: myservice-b
   namespace: kong-demo
-  annotations:
-    konghq.com/strip-path: 'true'
+  resourceVersion: "16847"
+  uid: fd67fcbe-d645-45eb-8f7e-31dc959af7cc
 spec:
   parentRefs:
-  - name: kong
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: kong
     namespace: kong
   rules:
-  - matches:
+  - backendRefs:
+    - group: ""
+      kind: Service
+      name: myservice-a
+      namespace: kong-demo
+      port: 80
+      weight: 1
+    matches:
     - path:
         type: PathPrefix
         value: /anything2
-    backendRefs:
-    - name: myservice-a
-      namespace: kong-demo
-      kind: Service
-      port: 80
+status:
+  parents:
+  - conditions:
+    - lastTransitionTime: "2026-04-18T09:31:28Z"
+      message: ""
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-04-18T09:31:28Z"
+      message: ""
+      observedGeneration: 1
+      reason: ResolvedRefs
+      status: "True"
+      type: ResolvedRefs
+    - lastTransitionTime: "2026-04-18T09:31:30Z"
+      message: ""
+      observedGeneration: 1
+      reason: ConfiguredInGateway
+      status: "True"
+      type: Programmed
+    controllerName: konghq.com/gateway-operator
+    parentRef:
+      group: gateway.networking.k8s.io
+      kind: Gateway
+      name: kong
+      namespace: kong
