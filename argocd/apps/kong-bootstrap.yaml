@@ -14,6 +14,10 @@ spec:
     helm:
       releaseName: kong-operator
       values: |
+        env:
+          zap_log_level: debug
+          zap_devel: "true"
+          zap_time_encoding: iso8601
         ko-crds:
           enabled: true
         gwapi-standard-crds:
